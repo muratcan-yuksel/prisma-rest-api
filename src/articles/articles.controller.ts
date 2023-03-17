@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -39,19 +41,42 @@ export class ArticlesController {
 
   @Get(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  findOne(@Param('id') id: string) {
-    return this.articlesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.articlesService.findOne(id);
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: ArticleEntity })
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articlesService.update(+id, updateArticleDto);
+  @ApiCreatedResponse({ type: ArticleEntity })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateArticleDto: UpdateArticleDto,
+  ) {
+    return this.articlesService.update(id, updateArticleDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  remove(@Param('id') id: string) {
-    return this.articlesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.articlesService.remove(id);
   }
+
+  // @Get(':id')
+  // @ApiOkResponse({ type: ArticleEntity })
+  // findOne(@Param('id') id: string) {
+  //   return this.articlesService.findOne(+id);
+  // }
+
+  // @Patch(':id')
+  // @ApiOkResponse({ type: ArticleEntity })
+  // update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
+  //   return this.articlesService.update(+id, updateArticleDto);
+  // }
+
+  // @Delete(':id')
+  // @ApiOkResponse({ type: ArticleEntity })
+  // remove(
+  //   @Param('id') id: string, // id is parsed as a string
+  // ) {
+  //   return this.articlesService.remove(+id); // id is converted to number using the expression '+id'
+  // }
 }

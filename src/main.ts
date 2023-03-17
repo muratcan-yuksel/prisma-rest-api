@@ -8,7 +8,9 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  // With this option set to true, ValidationPipe will automatically remove all non-whitelisted properties, where “non-whitelisted” means properties without any validation decorators.
+  // It’s important to note that this option will filter all properties without validation decorators, even if they are defined in the DTO.
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const config = new DocumentBuilder()
     .setTitle('Median')
